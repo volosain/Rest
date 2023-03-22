@@ -32,56 +32,91 @@ public class UserController {
         this.registrationService = registrationService;
     }
 
-    @RequestMapping("/user")
-    public String getUserPage(Model model) {
-        model.addAttribute("users", userService.findAll());
-        return "user";
-    }
+//    @GetMapping(value = "login")
+//    public String loginPage() {
+//        return "users/login";
+//    }
+//
+//    @RequestMapping("/userPage")
+//    public String getUserPage(Model model,Authentication authentication){
+//        model.addAttribute("users", userService.findAll());
+//        model.addAttribute("authentication",authentication);
+//        return "users/userPage";
+//    }
+//    @RequestMapping("/adminPage")
+//    public String getAdminPage(Model model, Authentication authentication ){
+//        model.addAttribute("users", userService.findAll());
+//        model.addAttribute("authentication",authentication);
+//        return "admin/adminPage";
+//    }
 
-    @RequestMapping("/admin")
-    public String getAdminPage(Model model) {
-        model.addAttribute("users", userService.findAll());
-        return "admin";
-    }
+//    @RequestMapping("/user")
+//    public String getUserPage(Model model) {
+//        model.addAttribute("users", userService.findAll());
+//        return "user";
+//    }
+//
+//    @RequestMapping("/admin")
+//    public String getAdminPage(Model model) {
+//        model.addAttribute("users", userService.findAll());
+//        return "admin";
+//    }
 
-    @GetMapping("/registration")
-    public String registrationPage(Model model) {
-        model.addAttribute("user", new User());
-        return "registration";
-    }
+//    @GetMapping("/registration")
+//    public String registrationPage(Model model) {
+//        model.addAttribute("user", new User());
+//        return "registration";
+//    }
+//
+//    @PostMapping("/registration")
+//    public String performRegistration(@ModelAttribute("user") @Valid User user,
+//                                      BindingResult bindingResult, Authentication auth) {
+//        if(bindingResult.hasErrors())
+//            return "registration";
+//        registrationService.register(user);
+//        return userAdminRedirect(auth);
+//    }
 
-    @PostMapping("/registration")
-    public String performRegistration(@ModelAttribute("user") @Valid User user,
-                                      BindingResult bindingResult, Authentication auth) {
-        if(bindingResult.hasErrors())
-            return "registration";
-        registrationService.register(user);
-        return userAdminRedirect(auth);
-    }
-
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}")
     public String show(@PathVariable("id") int id, Model model) {
         model.addAttribute("user", userService.findOne(id));
-        return "show";
+        return "admin/adminPage";
     }
 
-    @GetMapping("/users/{id}/edit")
+    @GetMapping("/add")
+    public String newUser(Model model, Authentication authentication) {
+        model.addAttribute("user", new User());
+        model.addAttribute("authentication", authentication);
+        return "admin/newUser";
+    }
+
+    @PostMapping("/new")
+    public String create(@ModelAttribute("user") @Valid User user, //добавляем нового юзера
+                         BindingResult bindingResult,
+                         Authentication auth) {
+        if (bindingResult.hasErrors())               //проверяем на валидацию
+            return "new";
+        userService.save(user);
+        return userAdminRedirect(auth); //при добавлении возвращает нас на главную страницу с списком
+    }
+
+    @GetMapping("/{id}/edit")
     public String edit(Model model, @PathVariable("id") int id){;
         model.addAttribute("user",userService.findOne(id));
-        return "edit";
+        return "adminPage";
     }
-    @PatchMapping("/users/{id}")
+    @PatchMapping("/{id}/update")
     public String update(@ModelAttribute("user") @Valid User user,
                          BindingResult bindingResult,
                          @PathVariable("id") int id,
                          Authentication auth){
         if (bindingResult.hasErrors())
-            return "edit";
+            return "update";
         userService.update(id, user);
         return userAdminRedirect(auth);
 
     }
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/{id}/delete")
     public String delete(@PathVariable("id") int id, Authentication auth){
         userService.delete(id);
         return userAdminRedirect(auth);
@@ -92,7 +127,7 @@ public class UserController {
         Optional<? extends GrantedAuthority> roleAdmin = authorities.stream()
                 .filter(a -> Objects.equals("ROLE_ADMIN", a.getAuthority()))
                 .findAny();
-        if (roleAdmin.isPresent()) return "redirect:/admin";
-        else return "redirect:/user";
+        if (roleAdmin.isPresent()) return "redirect:/adminPage";
+        else return "redirect:/login";
     }
 }

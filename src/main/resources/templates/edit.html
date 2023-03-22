@@ -14,11 +14,7 @@
   <input type="text" th:field="*{lastName}" id="lastName"/>
   <div style="color: red" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">Last Name Error</div>
   <br/>
-  <label for="email">Введите email</label>
-  <input type="text" th:field="*{email}" id="email"/>
-  <div style="color: red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email Error</div>
-  <br/>
-  <br/>
+  <hr/>
   <input type="submit" value="Update">
 </form>
 

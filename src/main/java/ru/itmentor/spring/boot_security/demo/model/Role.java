@@ -57,4 +57,9 @@ public class Role implements GrantedAuthority {
     public void setAuthority(String name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }
