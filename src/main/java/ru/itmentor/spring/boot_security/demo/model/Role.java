@@ -3,63 +3,66 @@ package ru.itmentor.spring.boot_security.demo.model;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "Role")
+@Table(name = "roles")
 public class Role implements GrantedAuthority {
 
     @Id
-    private int id;
+    @Column(name = "Id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "role")
+    private String role;
 
-    @ManyToMany(mappedBy = "roles")
-    private Set<User> users;
+//    @ManyToMany(mappedBy = "roles")
+//    private List<User> users;
 
     public Role() { }
 
-    public Role(int id, String name) {
+    public Role(Long id, String role) {
         this.id = id;
-        this.name = name;
+        this.role = role;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getRole() {
+        return role;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setRole(String role) {
+        this.role = role;
     }
 
-    public Set<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.users = users;
-    }
-
+//    public List<User> getUsers() {
+//        return users;
+//    }
+//
+//    public void setUsers(List<User> users) {
+//        this.users = users;
+//    }
+//
     @Override
     public String getAuthority() {
-        return name;
+        return getRole();
     }
 
-    public void setAuthority(String name) {
-        this.name = name;
+    public void setAuthority(String role) {
+        this.role = role;
     }
 
     @Override
     public String toString() {
-        return name;
+        return role;
     }
 }
